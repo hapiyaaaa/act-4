@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student API Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .result {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Student API Dashboard</h1>
+
+    <!-- Student Info Card -->
+    <div class="card">
+        <h2>Student Profile</h2>
+        <button onclick="loadStudent()">Load Student Information</button>
+        <div id="student-result" class="result"></div>
+    </div>
+
+    <!-- Greeting API Card -->
+    <div class="card">
+        <h2>Greeting API</h2>
+        <input type="text" id="nameInput" placeholder="Enter name">
+        <button onclick="sayHello()">Say Hello</button>
+        <div id="hello-result" class="result"></div>
+    </div>
+
+    <!-- Custom Endpoint (Check Grade) Card -->
+    <div class="card">
+        <h2>Grade API</h2>
+        <input type="number" id="scoreInput" placeholder="Enter score">
+        <button onclick="checkGrade()">Check Grade</button>
+        <div id="grade-result" class="result"></div>
+    </div>
+
+    <script>
+        // Load Student Information
+        function loadStudent() {
+            fetch('/student')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('student-result').innerHTML = `
+                        <p>ID: ${data.student_id}</p>
+                        <p>Name: ${data.name}</p>
+                        <p>Program: ${data.program}</p>
+                        <p>Year & Section: ${data.year} - ${data.section}</p>
+                    `;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Say Hello API
+        function sayHello() {
+            const name = document.getElementById('nameInput').value;
+            fetch(`/hello?name=${encodeURIComponent(name)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('hello-result').innerText = data.message;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Grade Checker API
+        function checkGrade() {
+            const score = document.getElementById('scoreInput').value;
+            fetch(`/grade?score=${score}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('grade-result').innerText = `Score: ${data.score} - Remark: ${data.remark}`;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
